@@ -1,4 +1,4 @@
-#we need to build a sim[ple restapi using fastapi
+#we need to build a simple restapi using fastapi
 #api will allow us to get the info about a user 
 #info includes their total baalnce along with list of their accounts 
 #each account will include the type of token along w dollar value 
@@ -11,28 +11,31 @@
 #list will be used to define arrays of items j like a list of accounts 
 
 
-from fastapi import FastAPI #importing fastapi to create the web application
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from typing import List 
+from typing import List
 
-app = FastAPI() #creates an instance of the fastapi class
+# Create an instance of the FastAPI application
+app = FastAPI()
 
-#we need to define the structure of the account 
+# Defines the data model for an acc
+# Each account stores its type, token symbol, and dollar value
+
 class Account(BaseModel):
-    account_type: str #this is the type of token
-    token: str 
-    value: float #amount of money in the account 
+    account_type: str     # ie: "Flex" or "Liquid"
+    token: str            # Token symbol like USDC, ETH, HYDX
+    value: float          # Dollar amount in this account
 
-#define the structure of the user 
-#want to implmemnent the users ID, total balance along w a list of accounts 
+# Define the data model for a user
+# Includes user ID, total balance, and a list of their accounts
+
 class User(BaseModel):
-    user_id: str 
-    total_balance: float 
-    accounts: List[Account] 
+    user_id: str                  # Unique user identifier
+    total_balance: float          # Combined balance across all accounts
+    accounts: List[Account]       # List of account objects
 
-#we need to import the baseModel and list for creating the data moeks 
-
-#make the fake data 
+# Simulated in-memory user database
+# This is mock data — no real database is used
 
 fake_user_db = {
     "user123": User(
@@ -46,18 +49,52 @@ fake_user_db = {
     )
 }
 
+# Root endpoint that welcomes the user
+# Helpful if someone lands on the base URL
 
-# we need tro define an API endpoint/"route" to get user data
-# When someone visits /users/user123, this function will run
-# It looks up the user from the fake database and returns their info
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Hydrex API"}
+
+# Endpoint to get full user data by user_id
+# This returns the total balance and all account details
+
 @app.get("/users/{user_id}", response_model=User)
 def get_user(user_id: str):
-    # Look up the user in the fake database
     user = fake_user_db.get(user_id)
+    if not user:
+        return {"error": "User not found"}
+    return user
 
-    # If the user isn't found return an error message
+# Homepage endpoint
+# Returns a summary view similar to a dashboard
+# Includes total balance, estimated weekly earning, and account/token breakdown
+
+@app.get("/homepage")
+def homepage(user_id: str = Query(...)):
+    user = fake_user_db.get(user_id)
     if not user:
         return {"error": "User not found"}
 
-    # If the user is found, return their data here the fastapi will turn into json
-    return user
+    # Estimate weekly earning as 6.5% of total balance (example logic)
+    weekly_earning = round(user.total_balance * 0.065, 2)
+
+    # Create a dictionary summarizing token balances
+    token_holdings = {acc.token: acc.value for acc in user.accounts}
+
+    # Return structured dashboard-like data
+    return {
+        "user_id": user.user_id,
+        "total_balance": user.total_balance,
+        "weekly_earning": weekly_earning,
+        "accounts": [
+            {
+                "account_type": acc.account_type,
+                "token": acc.token,
+                "value": acc.value
+            }
+            for acc in user.accounts
+        ],
+        "token_holdings": token_holdings,
+        "back_to_homepage": f"/homepage?user_id={user.user_id}"
+    }
