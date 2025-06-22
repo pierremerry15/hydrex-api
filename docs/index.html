@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hydrex Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .dashboard {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .balance {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .balance h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #0c915b;
+    }
+    .balance p {
+      margin: 5px 0 0;
+      color: gray;
+    }
+    .accounts {
+      margin-bottom: 30px;
+    }
+    .account {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .account-type {
+      font-weight: bold;
+    }
+    .token {
+      color: #888;
+    }
+    .value {
+      font-weight: bold;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="balance">
+      <h1>$108,126</h1>
+      <p>+ $7,023.19 this week</p>
+    </div>
+
+    <div class="accounts">
+      <div class="account">
+        <div>
+          <span class="account-type">Flex</span>
+          <span class="token"> - USDC</span>
+        </div>
+        <div class="value">$10,126.00</div>
+      </div>
+      <div class="account">
+        <div>
+          <span class="account-type">Flex</span>
+          <span class="token"> - HYDX</span>
+        </div>
+        <div class="value">$1,032.00</div>
+      </div>
+      <div class="account">
+        <div>
+          <span class="account-type">Liquid</span>
+          <span class="token"> - ETH</span>
+        </div>
+        <div class="value">$97,000.00</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      User ID: user123 | <a href="/homepage?user_id=user123">Back to Homepage JSON</a>
+    </div>
+  </div>
+</body>
+</html>
